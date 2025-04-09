@@ -8,56 +8,96 @@ mydb = mysql.connector.connect(
 )
 
 def init():
-    # 连接到 MySQL 数据库
+    try:
+        # 连接到 MySQL 数据库
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="Lzx25226",
+        )
+        mycursor = mydb.cursor()
+
+        # 创建数据库
+        mycursor.execute("CREATE DATABASE IF NOT EXISTS DBPractice02")
+        mycursor.execute("USE DBPractice02")
+
+        # 创建 Dept 表
+        create_dept_table = """
+        CREATE TABLE IF NOT EXISTS Dept (
+            dno INT(4) ZEROFILL AUTO_INCREMENT PRIMARY KEY,
+            dname ENUM('数学学院', '计算机学院', '智能学院', '电子学院', '元培学院'),
+            budget DECIMAL(10, 2),
+            manager INT(4) ZEROFILL DEFAULT NULL
+        )
+        """
+        mycursor.execute(create_dept_table)
+
+        # 创建 Emp 表（不使用 CHECK 约束）
+        create_emp_table = """
+        CREATE TABLE IF NOT EXISTS Emp (
+            eno INT(4) ZEROFILL AUTO_INCREMENT PRIMARY KEY,
+            ename VARCHAR(255),
+            birthday DATE,
+            level INT DEFAULT 3,
+            position ENUM('教师', '教务', '会计', '秘书'),
+            salary DECIMAL(10, 2),
+            dno INT(4) ZEROFILL,
+            FOREIGN KEY (dno) REFERENCES Dept(dno)
+                ON DELETE CASCADE
+                ON UPDATE CASCADE
+        )
+        """
+        mycursor.execute(create_emp_table)
+
+        # 创建触发器，验证 salary 和 level 的对应关系
+        create_trigger = """
+        CREATE TRIGGER validate_salary_level
+        BEFORE INSERT ON Emp
+        FOR EACH ROW
+        BEGIN
+            IF (NEW.level = 1 AND (NEW.salary < 2000 OR NEW.salary > 5000)) OR
+               (NEW.level = 2 AND (NEW.salary < 5001 OR NEW.salary > 10000)) OR
+               (NEW.level = 3 AND (NEW.salary < 10001 OR NEW.salary > 20000)) OR
+               (NEW.level = 4 AND (NEW.salary < 20001 OR NEW.salary > 50000)) OR
+               (NEW.level = 5 AND (NEW.salary < 50001 OR NEW.salary > 200000)) THEN
+                SIGNAL SQLSTATE '45000'
+                SET MESSAGE_TEXT = 'Salary does not match the level constraint';
+            END IF;
+        END;
+        """
+        mycursor.execute("DROP TRIGGER IF EXISTS validate_salary_level")
+        mycursor.execute(create_trigger)
+
+        # 添加外键约束到 Dept 表
+        add_foreign_key = """
+        ALTER TABLE Dept
+        ADD CONSTRAINT fk_manager
+        FOREIGN KEY (manager) REFERENCES Emp(eno)
+            ON DELETE SET NULL
+            ON UPDATE CASCADE
+        """
+        mycursor.execute(add_foreign_key)
+        
+    except mysql.connector.Error as err:
+        print(f"数据库操作失败: {err}")
+    finally:
+        # 确保关闭游标和数据库连接
+        if 'mycursor' in locals() and mycursor:
+            mycursor.close()
+        if 'mydb' in locals() and mydb.is_connected():
+            mydb.close()
+            print("数据库连接已关闭")
+    
+
+def test_foreign_key():
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
         password="Lzx25226",
+        database="DBPractice02"
     )
     mycursor = mydb.cursor()
-
-    # 创建数据库
-    mycursor.execute("CREATE DATABASE IF NOT EXISTS DBPractice02")
-    mycursor.execute("USE DBPractice02")
-
-    # 创建 Dept 表
-    create_dept_table = """
-    CREATE TABLE IF NOT EXISTS Dept (
-        dno INT(4) ZEROFILL AUTO_INCREMENT PRIMARY KEY,
-        dname ENUM('数学学院', '计算机学院', '智能学院', '电子学院', '元培学院'),
-        budget DECIMAL(10, 2),
-        manager INT(4) ZEROFILL DEFAULT NULL
-    )
-    """
-    mycursor.execute(create_dept_table)
-
-    # 创建 Emp 表
-    create_emp_table = """
-    CREATE TABLE IF NOT EXISTS Emp (
-        eno INT(4) ZEROFILL AUTO_INCREMENT PRIMARY KEY,
-        ename VARCHAR(255),
-        birthday DATE,
-        level INT DEFAULT 3 CHECK (level BETWEEN 1 AND 5),
-        position ENUM('教师', '教务', '会计', '秘书'),
-        salary DECIMAL(10, 2) CHECK (salary BETWEEN 2000 AND 200000),
-        dno INT(4) ZEROFILL,
-        FOREIGN KEY (dno) REFERENCES Dept(dno)
-            ON DELETE CASCADE
-            ON UPDATE CASCADE
-    )
-    """
-    mycursor.execute(create_emp_table)
-
-    # 添加外键约束到 Dept 表
-    add_foreign_key = """
-    ALTER TABLE Dept
-    ADD CONSTRAINT fk_manager
-    FOREIGN KEY (manager) REFERENCES Emp(eno)
-        ON DELETE SET NULL
-        ON UPDATE CASCADE
-    """
-    mycursor.execute(add_foreign_key)
-
+    
     # 插入数据
     try:
         # 插入 Dept 数据
@@ -68,7 +108,7 @@ def init():
 
         # 插入 Emp 数据
         insert_emp = "INSERT INTO Emp (ename, birthday, level, position, salary, dno) VALUES (%s, %s, %s, %s, %s, %s)"
-        emp_data = ("张三", "2000-01-01", 3, "教师", 5000.00, dno)
+        emp_data = ("张三", "2000-01-01", 1, "教师", 5000.00, dno)
         mycursor.execute(insert_emp, emp_data)
         eno = mycursor.lastrowid
 
@@ -84,6 +124,7 @@ def init():
 
     # 测试无效外键数据
     try:
+        insert_emp = "INSERT INTO Emp (ename, birthday, level, position, salary, dno) VALUES (%s, %s, %s, %s, %s, %s)"
         invalid_emp_data = ("李四", "2001-02-02", 4, "教务", 6000.00, 9999)
         mycursor.execute(insert_emp, invalid_emp_data)
         mydb.commit()
@@ -159,5 +200,40 @@ def delete():
         if 'mycursor' in locals() and mycursor:
             mycursor.close()
         if mydb.is_connected():
+            mydb.close()
+            print("数据库连接已关闭")
+            
+def show_all():
+    try:
+        # 连接到 MySQL 数据库
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="Lzx25226",
+            database="DBPractice02"
+        )
+        mycursor = mydb.cursor()
+
+        # 查询 Dept 表中的所有数据
+        print("Dept 表中的数据:")
+        mycursor.execute("SELECT * FROM Dept")
+        dept_results = mycursor.fetchall()
+        for row in dept_results:
+            print(row)
+
+        print("\nEmp 表中的数据:")
+        # 查询 Emp 表中的所有数据
+        mycursor.execute("SELECT * FROM Emp")
+        emp_results = mycursor.fetchall()
+        for row in emp_results:
+            print(row)
+
+    except mysql.connector.Error as err:
+        print(f"查询数据失败: {err}")
+    finally:
+        # 确保关闭游标和数据库连接
+        if 'mycursor' in locals() and mycursor:
+            mycursor.close()
+        if 'mydb' in locals() and mydb.is_connected():
             mydb.close()
             print("数据库连接已关闭")
