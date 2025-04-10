@@ -175,7 +175,7 @@ def delete():
         except mysql.connector.Error as err:
             print(f"删除外键约束失败: {err}")
 
-        # 删除表的顺序：先删除 Emp 表，再删除 Dept 表
+        # 删除表的顺序：先删除 Emp 表，再删除 Dept 表, 最后删除 CodeMapping 表
         try:
             drop_emp_table = "DROP TABLE IF EXISTS Emp"
             mycursor.execute(drop_emp_table)
@@ -189,6 +189,13 @@ def delete():
             print("Dept 表删除成功")
         except mysql.connector.Error as err:
             print(f"删除 Dept 表失败: {err}")
+            
+        try:
+            drop_CodeMapping_table = "DROP TABLE IF EXISTS CodeMapping"
+            mycursor.execute(drop_CodeMapping_table)
+            print("CodeMapping 表删除成功")
+        except mysql.connector.Error as err:
+            print(f"删除 CodeMapping 表失败: {err}")
 
         # 提交更改
         mydb.commit()
