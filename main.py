@@ -1,5 +1,6 @@
 import primary 
 import middle
+import advanced
 
 if __name__ == "__main__":
     # Phase Reset
@@ -21,6 +22,11 @@ if __name__ == "__main__":
     print("\n ## middle-3 ## show_all_smart_code() ## \n")
     middle.codemapping_init()
     middle.show_all_smart_code()
+    
+    # Phase Advanced
+    print("\n ## advanced-1 ## test_manager_salary_constraint() and test_manager_salary_constraint_2() ## \n")
+    advanced.test_manager_salary_constraint()
+    advanced.test_manager_salary_constraint_2()
     
     # The final tables
     print("\n ## show_all() ## \n")

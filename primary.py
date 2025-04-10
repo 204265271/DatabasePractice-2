@@ -110,6 +110,9 @@ def test_foreign_key():
         insert_emp = "INSERT INTO Emp (ename, birthday, level, position, salary, dno) VALUES (%s, %s, %s, %s, %s, %s)"
         emp_data = ("张三", "2000-01-01", 1, "教师", 5000.00, dno)
         mycursor.execute(insert_emp, emp_data)
+        insert_emp = "INSERT INTO Emp (ename, birthday, level, position, salary, dno) VALUES (%s, %s, %s, %s, %s, %s)"
+        emp_data = ("罗翔", "1977-05-10", 5, "教师", 150000.00, dno)
+        mycursor.execute(insert_emp, emp_data)
         eno = mycursor.lastrowid
 
         # 更新 Dept 的 manager 字段
@@ -142,6 +145,10 @@ def test_foreign_key():
         update_emp = "UPDATE Emp SET dno = %s WHERE ename = %s"
         update_data = (new_dno, "张三")
         mycursor.execute(update_emp, update_data)
+        
+        # 更新 Dept 的 manager 字段
+        update_dept_manager = "UPDATE Dept SET manager = %s WHERE dno = %s"
+        mycursor.execute(update_dept_manager, (eno, new_dno))
         mydb.commit()
         print("更新外键数据成功")
     except mysql.connector.Error as err:
