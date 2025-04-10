@@ -71,7 +71,7 @@ def test_deferred_constraints():
                 INSERT INTO Emp (ename, birthday, level, position, salary, dno)
                 VALUES (%s, %s, %s, %s, %s, %s)
             """
-            emp_data = ("李四", "1995-05-05", 5, "教师", 108000.00, None)
+            emp_data = ("David", "1995-05-05", 5, "教师", 180000.00, None)
             mycursor.execute(insert_emp, emp_data)
             eno = mycursor.lastrowid
 
@@ -80,7 +80,7 @@ def test_deferred_constraints():
                 INSERT INTO Dept (dname, budget, manager)
                 VALUES (%s, %s, %s)
             """
-            dept_data = ("智能学院", 150000.00, eno)
+            dept_data = ("智能学院", 200000.00, eno)
             mycursor.execute(insert_dept, dept_data)
             dno = mycursor.lastrowid
 
@@ -129,14 +129,14 @@ def test_insert():
         INSERT INTO Emp (ename, birthday, level, position, salary, dno)
         VALUES (%s, %s, %s, %s, %s, %s)
         """
-        valid_emp_data = ("王五", "1990-01-01", 3, "教师", 15000.00, 1)
+        valid_emp_data = ("Eric", "1990-01-01", 3, "教师", 15000.00, 1)
         mycursor.execute(insert_emp, valid_emp_data)
-        valid_emp_data = ("王玉", "1990-01-10", 4, "教师", 25000.00, 1)
+        valid_emp_data = ("Frank", "1990-01-10", 4, "教师", 25000.00, 1)
         mycursor.execute(insert_emp, valid_emp_data)
         print("插入符合约束的数据成功")
 
         # 插入不符合约束的数据
-        invalid_emp_data = ("刘六", "1995-05-05", 2, "教师", 15000.00, 1)
+        invalid_emp_data = ("George", "1995-05-05", 2, "教师", 15000.00, 1)
         try:
             mycursor.execute(insert_emp, invalid_emp_data)
             print("插入不符合约束的数据成功")

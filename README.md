@@ -10,3 +10,11 @@
 - So, let's simulate the delay constraint in MySQL: the method is to disable the foreign key constraint first, then insert the cross-referenced data, and finally restore the foreign key constraint.
 - If it was PGSQL, you can use the standard BEGIN-COMMIT statement to write it.
 - MySQL does not support CHECK between columns! God D**n it. So we need to use a trigger instead.
+
+# Discovery 
+- If an insertion is banned by the MySQL system, the primary key will get increased.
+- Else it's discovered by myself, not. (Because I kill the inserting operation.)
+
+# Some Explanation for Primary Phase with Middle Phase 
+- Honestly speaking, I need to set ***dno INT(4) ZEROFILL*** in the Emp table to be ***NOT NULL***,
+    however, due the the d**n feature of MySQL, I cannot set this otherwise the middle-1 test will never be finished!

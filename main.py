@@ -9,6 +9,8 @@ if __name__ == "__main__":
     primary.delete()
     print("\n ## init() ## \n")
     primary.init()
+    print("\n ## advanced-2 ## setting ensure_budget_consistency() ## \n")
+    advanced.ensure_budget_consistency()
     
     # Phase Primary
     print("\n ## primary ## test_foreign_key() ## \n")
@@ -27,7 +29,5 @@ if __name__ == "__main__":
     print("\n ## advanced-1 ## test_manager_salary_constraint() and test_manager_salary_constraint_2() ## \n")
     advanced.test_manager_salary_constraint()
     advanced.test_manager_salary_constraint_2()
-    
-    # The final tables
-    print("\n ## show_all() ## \n")
+    print("\n ## advanced-2 ## after setting ensure_budget_consistency() from beginning ## show_all() ## \n")
     primary.show_all()

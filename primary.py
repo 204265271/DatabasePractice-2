@@ -102,16 +102,16 @@ def test_foreign_key():
     try:
         # 插入 Dept 数据
         insert_dept = "INSERT INTO Dept (dname, budget) VALUES (%s, %s)"
-        dept_data = ("计算机学院", 100000.00)
+        dept_data = ("计算机学院", 1000000.00)
         mycursor.execute(insert_dept, dept_data)
         dno = mycursor.lastrowid
 
         # 插入 Emp 数据
         insert_emp = "INSERT INTO Emp (ename, birthday, level, position, salary, dno) VALUES (%s, %s, %s, %s, %s, %s)"
-        emp_data = ("张三", "2000-01-01", 1, "教师", 5000.00, dno)
+        emp_data = ("Adam", "2000-01-01", 1, "教师", 5000.00, dno)
         mycursor.execute(insert_emp, emp_data)
         insert_emp = "INSERT INTO Emp (ename, birthday, level, position, salary, dno) VALUES (%s, %s, %s, %s, %s, %s)"
-        emp_data = ("罗翔", "1977-05-10", 5, "教师", 150000.00, dno)
+        emp_data = ("Benjamin", "1977-05-10", 5, "教师", 150000.00, dno)
         mycursor.execute(insert_emp, emp_data)
         eno = mycursor.lastrowid
 
@@ -128,22 +128,21 @@ def test_foreign_key():
     # 测试无效外键数据
     try:
         insert_emp = "INSERT INTO Emp (ename, birthday, level, position, salary, dno) VALUES (%s, %s, %s, %s, %s, %s)"
-        invalid_emp_data = ("李四", "2001-02-02", 4, "教务", 6000.00, 9999)
+        invalid_emp_data = ("Christopher", "2001-02-02", 2, "教务", 6000.00, 9999)
         mycursor.execute(insert_emp, invalid_emp_data)
         mydb.commit()
     except mysql.connector.Error as err:
         print(f"插入无效外键数据失败，符合预期: {err}")
-        mydb.rollback()
 
     # 更新外键数据
     try:
         insert_new_dept = "INSERT INTO Dept (dname, budget) VALUES (%s, %s)"
-        new_dept_data = ("数学学院", 200000.00)
+        new_dept_data = ("数学学院", 500000.00)
         mycursor.execute(insert_new_dept, new_dept_data)
         new_dno = mycursor.lastrowid
 
-        update_emp = "UPDATE Emp SET dno = %s WHERE ename = %s"
-        update_data = (new_dno, "张三")
+        update_emp = "UPDATE Emp SET dno = %s WHERE eno = %s"
+        update_data = (new_dno, 1)
         mycursor.execute(update_emp, update_data)
         
         # 更新 Dept 的 manager 字段
