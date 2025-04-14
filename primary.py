@@ -1,20 +1,23 @@
 import mysql.connector
 
-# 连接到 MySQL 数据库
-mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="Lzx25226",
-)
+# change it to your own database config
+config = {
+    "username": "root", 
+    "password": "Lzx25226",
+    "host":     "localhost", 
+}
+
+config_with_db = {
+    "username": "root", 
+    "password": "Lzx25226",
+    "host":     "localhost", 
+    "database": "DBPractice02"
+}
 
 def init():
     try:
         # 连接到 MySQL 数据库
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="Lzx25226",
-        )
+        mydb = mysql.connector.connect(**config)
         mycursor = mydb.cursor()
 
         # 创建数据库
@@ -90,12 +93,7 @@ def init():
     
 
 def test_foreign_key():
-    mydb = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="Lzx25226",
-        database="DBPractice02"
-    )
+    mydb = mysql.connector.connect(**config_with_db)
     mycursor = mydb.cursor()
     
     # 插入数据
@@ -162,11 +160,7 @@ def test_foreign_key():
 def delete():
     try:
         # 连接到 MySQL 数据库
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="Lzx25226",
-        )
+        mydb = mysql.connector.connect(**config)
         mycursor = mydb.cursor()
 
         # 切换到目标数据库
@@ -219,12 +213,7 @@ def delete():
 def show_all():
     try:
         # 连接到 MySQL 数据库
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="Lzx25226",
-            database="DBPractice02"
-        )
+        mydb = mysql.connector.connect(**config_with_db)
         mycursor = mydb.cursor()
 
         # 查询 Dept 表中的所有数据

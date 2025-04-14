@@ -1,15 +1,11 @@
 import mysql.connector
+from primary import config_with_db
 
 # the table for Q3
 def codemapping_init():
     try:
         # 连接到 MySQL 数据库
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="Lzx25226",
-            database="DBPractice02"
-        )
+        mydb = mysql.connector.connect(**config_with_db)
         mycursor = mydb.cursor()
 
         # 创建 CodeMapping 表
@@ -52,12 +48,7 @@ def codemapping_init():
 def test_deferred_constraints():
     try:
         # 连接到 MySQL 数据库
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="Lzx25226",
-            database="DBPractice02"
-        )
+        mydb = mysql.connector.connect(**config_with_db)
         mycursor = mydb.cursor()
 
         # 禁用外键约束
@@ -116,12 +107,7 @@ def test_deferred_constraints():
 def test_insert():
     try:
         # 连接到 MySQL 数据库
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="Lzx25226",
-            database="DBPractice02"
-        )
+        mydb = mysql.connector.connect(**config_with_db)
         mycursor = mydb.cursor()
 
         # 插入符合约束的数据
@@ -158,12 +144,7 @@ def test_insert():
 def generate_smart_code(eno):
     try:
         # 连接到 MySQL 数据库
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="Lzx25226",
-            database="DBPractice02"
-        )
+        mydb = mysql.connector.connect(**config_with_db)
         mycursor = mydb.cursor()
 
         # 查询员工信息
@@ -213,12 +194,7 @@ def generate_smart_code(eno):
 def show_all_smart_code():
     try:
         # 连接到 MySQL 数据库
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="Lzx25226",
-            database="DBPractice02"
-        )
+        mydb = mysql.connector.connect(**config_with_db)
         mycursor = mydb.cursor()
 
         # 查询所有员工号

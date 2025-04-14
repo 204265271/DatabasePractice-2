@@ -1,15 +1,11 @@
 import mysql.connector
+from primary import config_with_db
 
 # advanced - 1
 def ensure_manager_salary_constraint():
     try:
         # 连接到 MySQL 数据库
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="Lzx25226",
-            database="DBPractice02"
-        )
+        mydb = mysql.connector.connect(**config_with_db)
         mycursor = mydb.cursor()
 
         # 删除已有的触发器（如果存在）
@@ -55,12 +51,7 @@ def test_manager_salary_constraint():
 
     # 测试插入数据
     try:
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="Lzx25226",
-            database="DBPractice02"
-        )
+        mydb = mysql.connector.connect(**config_with_db)
         mycursor = mydb.cursor()
 
         # 插入管理者工资低于员工的情况
@@ -86,12 +77,7 @@ def test_manager_salary_constraint_2():
 
     # 测试插入数据
     try:
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="Lzx25226",
-            database="DBPractice02"
-        )
+        mydb = mysql.connector.connect(**config_with_db)
         mycursor = mydb.cursor()
 
         # 插入管理者工资高于员工的情况
@@ -116,12 +102,7 @@ def test_manager_salary_constraint_2():
 def ensure_budget_consistency():
     try:
         # 连接到 MySQL 数据库
-        mydb = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="Lzx25226",
-            database="DBPractice02"
-        )
+        mydb = mysql.connector.connect(**config_with_db)
         mycursor = mydb.cursor()
 
         # 删除已有的触发器（如果存在）
